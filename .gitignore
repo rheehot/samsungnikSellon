@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# 프로젝트
+data/
+logs/
+*.db
+*.log
+
+# 설정 (민감 정보)
+config.yaml
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Render
+.render/
+
+# OMC (Claude Code 상태 파일)
+.omc/
+
+# 기획 관리
+docs/.bkit-memory.json
+docs/.pdca-status.json
+docs/.pdca/
