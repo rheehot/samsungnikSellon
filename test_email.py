@@ -18,19 +18,19 @@ alert_sender = AlertSender(
     sender_password=config["email"]["password"]
 )
 
-# 테스트용 주가 데이터 (실제 데이터와 유사하게)
-samsung_ath_price = 95000  # 삼성전자 전고점 예시
-samsung_yesterday_price = 87000  # 삼성전자 어제 종가 예시
-skhynix_ath_price = 210000  # SK하이닉스 전고점 예시
-skhynix_yesterday_price = 195000  # SK하이닉스 어제 종가 예시
+# 테스트용 주가 데이터 (52주 신고가 기준 실제 시세)
+samsung_ath_price = 374500  # 삼성전자 52주 신고가
+samsung_yesterday_price = 339500  # 삼성전자 현재가
+skhynix_ath_price = 2987000  # SK하이닉스 52주 신고가
+skhynix_yesterday_price = 2673000  # SK하이닉스 현재가
 
-# 테스트용 지수 데이터 (실제 지수와 유사하게)
+# 테스트용 지수 데이터 (52주 신고가 기준 실제 지수)
 indices_data = {
-    'kospi': {'yesterday': 2750.5, 'ath': 2850.0},
-    'kosdaq': {'yesterday': 890.2, 'ath': 950.0},
-    'nasdaq': {'yesterday': 17500.0, 'ath': 18500.0},
-    'sp500': {'yesterday': 5450.0, 'ath': 5650.0},
-    'dow': {'yesterday': 39500.0, 'ath': 41000.0}
+    'kospi': {'yesterday': 8411.21, 'ath': 9385.59},     # 코스피 52주 신고가
+    'kosdaq': {'yesterday': 851.37, 'ath': 1229.42},      # 코스닥 52주 신고가
+    'nasdaq': {'yesterday': 25297.62, 'ath': 27190.21},   # 나스닥 52주 신고가
+    'sp500': {'yesterday': 7354.02, 'ath': 7620.90},      # S&P500 52주 신고가
+    'dow': {'yesterday': 51876.11, 'ath': 52655.66}       # 다우 52주 신고가
 }
 
 # 테스트용 SK하이닉스 전고점 일자 (최근)
