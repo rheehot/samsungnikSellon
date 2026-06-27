@@ -80,20 +80,39 @@ bash scripts/install_cron.sh
 
 **로컬 PC 없이 클라우드에서 24/7 자동 실행!**
 
-```bash
-# 1. GitHub 설정 스크립트 실행
-bash scripts/setup_github.sh
+**Step 1: GitHub 저장소 생성**
+1. [GitHub New Repository](https://github.com/new) 접속
+2. 저장소 이름: `samsungnikSellon`
+3. Public: 선택 (선택 사항)
+4. "Create repository" 클릭
 
-# 2. Render 대시보드에서 배포
-# https://dashboard.render.com
-# - "New +" 클릭 → "Blueprint" 선택
-# - GitHub 연결 → 이 저장소 선택
-# - 환경 변수 입력:
-#   EMAIL_SENDER=your-email@gmail.com
-#   EMAIL_PASSWORD=your-app-password
-#   EMAIL_RECIPIENTS=rheehot@gmail.com
-# - "Deploy Blueprint" 클릭
+**Step 2: 코드 푸시**
+
+```bash
+# GitHub에서 보여주는 명령어로 원격 저장소 연결 및 푸시
+# (아래 YOUR_USERNAME을 본인 GitHub 사용자명으로 변경)
+
+git remote add origin https://github.com/YOUR_USERNAME/samsungnikSellon.git
+git branch -M main
+git push -u origin main
 ```
+
+또는 자동 스크립트 사용:
+```bash
+bash scripts/setup_github.sh
+```
+
+**Step 3: Render 배포**
+1. [Render 대시보드](https://dashboard.render.com) 접속
+2. **"New +"** → **"Blueprint"** 클릭
+3. **"Connect GitHub"** → 방금 생성한 저장소 선택
+4. **환경 변수** 입력:
+   ```
+   EMAIL_SENDER=your-email@gmail.com
+   EMAIL_PASSWORD=your-app-password
+   EMAIL_RECIPIENTS=rheehot@gmail.com
+   ```
+5. **"Deploy Blueprint"** 클릭
 
 **환경 변수 (Render 대시보드에서 설정):**
 ```

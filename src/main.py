@@ -100,25 +100,27 @@ class StockMonitor:
         samsung_price = self._collect_price("samsung", target_date)
         skhynix_price = self._collect_price("skhynix", target_date)
 
-        if not samsung_price or not skhynix_price:
-            logger.error("주가 수집 실패로 모니터링 중단")
-            return
+        # 2. 지수 수집
+        indices_data = self._collect_indices(target_date)
 
-        # 2. 전고점 갱신 체크
+        if not samsung_price or not skhynix_price:
+            logger.warning("주가 수집 실패 but 지수는 성공 - 계속 진행")
+
+        # 3. 전고점 갱신 체크
         sk_new_ath = self._check_all_time_high("skhynix", skhynix_price, target_date)
         samsung_new_ath = self._check_all_time_high("samsung", samsung_price, target_date)
 
-        # 3. SK하이닉스 전고점 돌파 시 새로운 트리거 생성
+        # 4. SK하이닉스 전고점 돌파 시 새로운 트리거 생성
         if sk_new_ath:
             self.db.create_alert_trigger(target_date)
             logger.info(f"새로운 알림 트리거 생성: {target_date}")
 
-        # 4. 활성 트리거 확인 및 처리
+        # 5. 활성 트리거 확인 및 처리
         self._process_active_triggers(samsung_price, target_date)
 
-        # 5. 매일 상태 이메일 발송
+        # 6. 매일 상태 이메일 발송
         if send_daily_email and self.alert_sender:
-            self._send_daily_status(samsung_price, skhynix_price, target_date)
+            self._send_daily_status(samsung_price, skhynix_price, target_date, indices_data)
 
         logger.info("모니터링 완료")
 
@@ -144,6 +146,41 @@ class StockMonitor:
         else:
             logger.error(f"{symbol_key} 주가 수집 실패")
             return None
+
+    def _collect_indices(self, target_date: date) -> dict:
+        """
+        지수 수집
+
+        Args:
+            target_date: 대상 날짜
+
+        Returns:
+            지수 데이터 딕셔너리
+        """
+        indices = {}
+        indices_config = self.config.get("indices", {})
+
+        for index_key, symbol in indices_config.items():
+            logger.info(f"{index_key} 지수 수집 시작")
+
+            price = self.stock_api.get_stock_price(symbol)
+
+            if price:
+                self.db.save_price(symbol, price, target_date)
+                ath = self.db.get_all_time_high(symbol)
+                indices[index_key] = {
+                    "yesterday": price,
+                    "ath": ath if ath else price
+                }
+                logger.info(f"{index_key} 지수: {price:,.2f}")
+            else:
+                logger.warning(f"{index_key} 지수 수집 실패")
+                indices[index_key] = {
+                    "yesterday": 0,
+                    "ath": 0
+                }
+
+        return indices
 
     def _check_all_time_high(self, symbol_key: str, price: float, target_date: date) -> bool:
         """
@@ -253,7 +290,7 @@ class StockMonitor:
         except Exception as e:
             logger.error(f"알림 발송 실패: {e}")
 
-    def _send_daily_status(self, samsung_price: float, skhynix_price: float, target_date: date):
+    def _send_daily_status(self, samsung_price: float, skhynix_price: float, target_date: date, indices_data: dict = None):
         """
         매일 상태 이메일 발송
 
@@ -261,6 +298,7 @@ class StockMonitor:
             samsung_price: 삼성전자 종가
             skhynix_price: SK하이닉스 종가
             target_date: 대상 날짜
+            indices_data: 지수 데이터 딕셔너리
         """
         try:
             # 전고점 정보 조회
@@ -287,7 +325,8 @@ class StockMonitor:
                 skhynix_ath_price=skhynix_ath["price"],
                 skhynix_yesterday_price=skhynix_price,
                 skhynix_ath_date=sk_ath_date,
-                days_since_sk_ath=days_since_sk_ath
+                days_since_sk_ath=days_since_sk_ath,
+                indices=indices_data
             )
 
             if success:

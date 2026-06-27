@@ -213,7 +213,8 @@ SK하이닉스가 {skhynix_ath_date}에 전고점({skhynix_ath_price:,.0f}원)�
         skhynix_ath_price: float,
         skhynix_yesterday_price: float,
         skhynix_ath_date: Optional[date] = None,
-        days_since_sk_ath: Optional[int] = None
+        days_since_sk_ath: Optional[int] = None,
+        indices: Optional[dict] = None
     ) -> bool:
         """
         매일 상태 이메일 발송
@@ -226,6 +227,7 @@ SK하이닉스가 {skhynix_ath_date}에 전고점({skhynix_ath_price:,.0f}원)�
             skhynix_yesterday_price: SK하이닉스 어제 종가
             skhynix_ath_date: SK하이닉스 전고점 일자 (없으면 None)
             days_since_sk_ath: SK하이닉스 전고점 이후 경과 일수 (없으면 None)
+            indices: 지수 데이터 딕셔너리 (kospi, kosdaq, nasdaq, sp500, dow)
 
         Returns:
             발송 성공 여부
@@ -234,18 +236,44 @@ SK하이닉스가 {skhynix_ath_date}에 전고점({skhynix_ath_price:,.0f}원)�
         if days_since_sk_ath and days_since_sk_ath >= 30:
             subject = f"🚨 [주의] 삼성전자 전고점 미갱신 {days_since_sk_ath}일 경과"
         else:
-            subject = f"📊 삼성전자/SK하이닉스 주가 현황 ({date.today().strftime('%Y-%m-%d')})"
+            subject = f"📊 글로벌 지수 포함 일일 주가 현황 ({date.today().strftime('%Y-%m-%d')})"
 
         # 어제 날짜
         yesterday = date.today() - timedelta(days=1)
 
         # 텍스트 버전
         text_body = f"""
-삼성전자/SK하이닉스 주가 모니터링 일일 보고
+🌏 글로벌 지수 & 주식 일일 보고
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 어제 종가 기준 ({yesterday})
+
+【한국 지수】
+
+코스피 (KOSPI):
+  • 어제 종가: {indices.get('kospi', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('kospi', {}).get('ath', 0):,.2f}pt
+
+코스닥 (KOSDAQ):
+  • 어제 종가: {indices.get('kosdaq', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('kosdaq', {}).get('ath', 0):,.2f}pt
+
+【미국 지수】
+
+나스닥 (NASDAQ):
+  • 어제 종가: {indices.get('nasdaq', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('nasdaq', {}).get('ath', 0):,.2f}pt
+
+S&P 500:
+  • 어제 종가: {indices.get('sp500', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('sp500', {}).get('ath', 0):,.2f}pt
+
+다우 (DOW):
+  • 어제 종가: {indices.get('dow', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('dow', {}).get('ath', 0):,.2f}pt
+
+【한국 주식】
 
 삼성전자:
   • 어제 종가: {samsung_yesterday_price:,.0f}원
