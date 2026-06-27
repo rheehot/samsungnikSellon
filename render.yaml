@@ -12,11 +12,9 @@ services:
         value: /opt/render/project/src
       - key: EMAIL_ENABLED
         value: true
-
-# Cron Jobs (매일 아침 8시 KST 실행)
-crons:
-  - name: daily-stock-check
-    service: stock-monitor-worker
-    command: python -m src.main
-    schedule: "0 8 * * *"
-    timezone: Asia/Seoul
+      - key: EMAIL_SENDER
+        value: rheehot@gmail.com
+      - key: EMAIL_PASSWORD
+        value: ncpb ukay lyrz ueaq
+      - key: EMAIL_RECIPIENTS
+        value: rheehot@gmail.com
