@@ -18,3 +18,13 @@ services:
         value: ncpb ukay lyrz ueaq
       - key: EMAIL_RECIPIENTS
         value: rheehot@gmail.com
+      - key: KOSPI_SYMBOL
+        value: ^KS11
+      - key: KOSDAQ_SYMBOL
+        value: ^KQ11
+      - key: NASDAQ_SYMBOL
+        value: ^IXIC
+      - key: SP500_SYMBOL
+        value: ^GSPC
+      - key: DOW_SYMBOL
+        value: ^DJI
