@@ -1,0 +1,191 @@
+{
+  "timestamp": "2026-06-28T09:07:11.691Z",
+  "reason": "compaction",
+  "status": {
+    "version": "2.0",
+    "lastUpdated": "2026-06-27T06:44:29.134Z",
+    "activeFeatures": [
+      "samsungnikSellon",
+      "scripts"
+    ],
+    "primaryFeature": "samsungnikSellon",
+    "features": {
+      "samsungnikSellon": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-06-26T11:24:49.609Z",
+          "lastUpdated": "2026-06-27T06:44:29.134Z"
+        },
+        "lastFile": "/Users/jong-woorhee/study/vibecoding/samsungnikSellon/test_email.py"
+      },
+      "scripts": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-06-26T11:41:06.503Z",
+          "lastUpdated": "2026-06-26T11:54:56.279Z"
+        },
+        "lastFile": "/Users/jong-woorhee/study/vibecoding/samsungnikSellon/scripts/setup_github.sh"
+      }
+    },
+    "pipeline": {
+      "currentPhase": 1,
+      "level": "Dynamic",
+      "phaseHistory": []
+    },
+    "session": {
+      "startedAt": "2026-06-26T11:19:52.411Z",
+      "onboardingCompleted": false,
+      "lastActivity": "2026-06-27T06:44:29.134Z"
+    },
+    "history": [
+      {
+        "timestamp": "2026-06-26T11:24:49.609Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:25:08.184Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:25:24.117Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:25:39.492Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:25:52.212Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:40:12.901Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:40:25.693Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:40:31.763Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:41:06.503Z",
+        "feature": "scripts",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:41:16.088Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:53:44.080Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:53:51.454Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:53:58.002Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:54:13.746Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-26T11:54:56.279Z",
+        "feature": "scripts",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T02:05:25.606Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T05:42:14.225Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T05:42:32.035Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T05:42:43.200Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T05:43:00.902Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T05:43:11.232Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T06:38:38.196Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-06-27T06:44:29.134Z",
+        "feature": "samsungnikSellon",
+        "phase": "do",
+        "action": "updated"
+      }
+    ]
+  }
+}

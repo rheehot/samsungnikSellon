@@ -33,6 +33,17 @@ indices_data = {
     'dow': {'yesterday': 51876.11, 'ath': 52655.66}       # 다우 52주 신고가
 }
 
+# 테스트용 미국 주식 데이터 (EWY ETF, 마이크론) - 실제 시세 반영
+us_stocks_data = {
+    'ewy': {'yesterday': 197.28, 'ath': 219.20},           # EWY ETF (2025-06-27 기준)
+    'mu': {'yesterday': 1132.33, 'ath': 1213.56}          # 마이크론 테크놀로지 (2025-06-27 기준)
+}
+
+# 테스트용 환율 데이터
+forex_data = {
+    'usdkrw': {'yesterday': 1385.50, 'ath': 1385.50}     # USD/KRW 환율
+}
+
 # 테스트용 SK하이닉스 전고점 일자 (최근)
 skhynix_ath_date = date.today() - timedelta(days=15)
 days_since_sk_ath = 15
@@ -42,6 +53,12 @@ print("테스트 이메일 발송 중...")
 print("지수 데이터:")
 for key, value in indices_data.items():
     print(f"  {key}: {value['yesterday']:,.2f} (전고점: {value['ath']:,.2f})")
+print("미국 주식 데이터:")
+for key, value in us_stocks_data.items():
+    print(f"  {key}: ${value['yesterday']:,.2f} (전고점: ${value['ath']:,.2f})")
+print("환율 데이터:")
+for key, value in forex_data.items():
+    print(f"  {key}: {value['yesterday']:,.2f}원/$")
 print()
 
 success = alert_sender.send_daily_status(
@@ -52,7 +69,9 @@ success = alert_sender.send_daily_status(
     skhynix_yesterday_price=skhynix_yesterday_price,
     skhynix_ath_date=skhynix_ath_date,
     days_since_sk_ath=days_since_sk_ath,
-    indices=indices_data
+    indices=indices_data,
+    us_stocks=us_stocks_data,
+    forex=forex_data
 )
 
 if success:
@@ -61,6 +80,8 @@ if success:
     print("포함된 내용:")
     print("  - 한국 지수: 코스피, 코스닥")
     print("  - 미국 지수: 나스닥, S&P 500, 다우")
+    print("  - 미국 주식: EWY ETF, 마이크론 (MU)")
+    print("  - 환율: USD/KRW")
     print("  - 한국 주식: 삼성전자, SK하이닉스")
 else:
     print("❌ 이메일 발송 실패")

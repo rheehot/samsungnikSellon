@@ -1,10 +1,11 @@
 services:
-  # Worker Service (주가 모니터링)
-  - type: worker
-    name: stock-monitor-worker
+  # Cron Job (월-금 아침 9시 한국 시간 실행, 주말 제외)
+  - type: cron
+    name: stock-monitor-cron
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python -m src.main
+    cron: "0 23 * * 0-4"  # 한국 시간 월-금 아침 8시 (UTC 일 23시-목 23시)
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -28,3 +29,9 @@ services:
         value: ^GSPC
       - key: DOW_SYMBOL
         value: ^DJI
+      - key: EWY_SYMBOL
+        value: EWY
+      - key: MU_SYMBOL
+        value: MU
+      - key: USDKRW_SYMBOL
+        value: KRW=X

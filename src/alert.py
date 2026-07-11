@@ -214,7 +214,9 @@ SK하이닉스가 {skhynix_ath_date}에 전고점({skhynix_ath_price:,.0f}원)�
         skhynix_yesterday_price: float,
         skhynix_ath_date: Optional[date] = None,
         days_since_sk_ath: Optional[int] = None,
-        indices: Optional[dict] = None
+        indices: Optional[dict] = None,
+        us_stocks: Optional[dict] = None,
+        forex: Optional[dict] = None
     ) -> bool:
         """
         매일 상태 이메일 발송
@@ -228,6 +230,8 @@ SK하이닉스가 {skhynix_ath_date}에 전고점({skhynix_ath_price:,.0f}원)�
             skhynix_ath_date: SK하이닉스 전고점 일자 (없으면 None)
             days_since_sk_ath: SK하이닉스 전고점 이후 경과 일수 (없으면 None)
             indices: 지수 데이터 딕셔너리 (kospi, kosdaq, nasdaq, sp500, dow)
+            us_stocks: 미국 주식 데이터 딕셔너리 (ewy, mu)
+            forex: 환율 데이터 딕셔너리 (usdkrw)
 
         Returns:
             발송 성공 여부
@@ -249,30 +253,6 @@ SK하이닉스가 {skhynix_ath_date}에 전고점({skhynix_ath_price:,.0f}원)�
 
 📊 어제 종가 기준 ({yesterday})
 
-【한국 지수】
-
-코스피 (KOSPI):
-  • 어제 종가: {indices.get('kospi', {}).get('yesterday', 0):,.2f}pt
-  • 전고점: {indices.get('kospi', {}).get('ath', 0):,.2f}pt
-
-코스닥 (KOSDAQ):
-  • 어제 종가: {indices.get('kosdaq', {}).get('yesterday', 0):,.2f}pt
-  • 전고점: {indices.get('kosdaq', {}).get('ath', 0):,.2f}pt
-
-【미국 지수】
-
-나스닥 (NASDAQ):
-  • 어제 종가: {indices.get('nasdaq', {}).get('yesterday', 0):,.2f}pt
-  • 전고점: {indices.get('nasdaq', {}).get('ath', 0):,.2f}pt
-
-S&P 500:
-  • 어제 종가: {indices.get('sp500', {}).get('yesterday', 0):,.2f}pt
-  • 전고점: {indices.get('sp500', {}).get('ath', 0):,.2f}pt
-
-다우 (DOW):
-  • 어제 종가: {indices.get('dow', {}).get('yesterday', 0):,.2f}pt
-  • 전고점: {indices.get('dow', {}).get('ath', 0):,.2f}pt
-
 【한국 주식】
 
 삼성전자:
@@ -284,6 +264,52 @@ SK하이닉스:
   • 어제 종가: {skhynix_yesterday_price:,.0f}원
   • 전고점: {skhynix_ath_price:,.0f}원
   • 전고점 대비: {((skhynix_yesterday_price / skhynix_ath_price) - 1) * 100:.1f}%
+
+【한국 지수】
+
+코스피 (KOSPI):
+  • 어제 종가: {indices.get('kospi', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('kospi', {}).get('ath', 0):,.2f}pt
+  • 전고점 대비: {((indices.get('kospi', {}).get('yesterday', 0) / indices.get('kospi', {}).get('ath', 1)) - 1) * 100:.1f}%
+
+코스닥 (KOSDAQ):
+  • 어제 종가: {indices.get('kosdaq', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('kosdaq', {}).get('ath', 0):,.2f}pt
+  • 전고점 대비: {((indices.get('kosdaq', {}).get('yesterday', 0) / indices.get('kosdaq', {}).get('ath', 1)) - 1) * 100:.1f}%
+
+【미국 지수】
+
+나스닥 (NASDAQ):
+  • 어제 종가: {indices.get('nasdaq', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('nasdaq', {}).get('ath', 0):,.2f}pt
+  • 전고점 대비: {((indices.get('nasdaq', {}).get('yesterday', 0) / indices.get('nasdaq', {}).get('ath', 1)) - 1) * 100:.1f}%
+
+S&P 500:
+  • 어제 종가: {indices.get('sp500', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('sp500', {}).get('ath', 0):,.2f}pt
+  • 전고점 대비: {((indices.get('sp500', {}).get('yesterday', 0) / indices.get('sp500', {}).get('ath', 1)) - 1) * 100:.1f}%
+
+다우 (DOW):
+  • 어제 종가: {indices.get('dow', {}).get('yesterday', 0):,.2f}pt
+  • 전고점: {indices.get('dow', {}).get('ath', 0):,.2f}pt
+  • 전고점 대비: {((indices.get('dow', {}).get('yesterday', 0) / indices.get('dow', {}).get('ath', 1)) - 1) * 100:.1f}%
+
+【미국 주식】
+
+EWY (한국 ETF):
+  • 어제 종가: ${us_stocks.get('ewy', {}).get('yesterday', 0):,.2f}
+  • 전고점: ${us_stocks.get('ewy', {}).get('ath', 0):,.2f}
+  • 전고점 대비: {((us_stocks.get('ewy', {}).get('yesterday', 0) / us_stocks.get('ewy', {}).get('ath', 1)) - 1) * 100:.1f}%
+
+MU (마이크론 테크놀로지):
+  • 어제 종가: ${us_stocks.get('mu', {}).get('yesterday', 0):,.2f}
+  • 전고점: ${us_stocks.get('mu', {}).get('ath', 0):,.2f}
+  • 전고점 대비: {((us_stocks.get('mu', {}).get('yesterday', 0) / us_stocks.get('mu', {}).get('ath', 1)) - 1) * 100:.1f}%
+
+【환율】
+
+USD/KRW (달러/원):
+  • 어제 종가: {forex.get('usdkrw', {}).get('yesterday', 0):,.2f}원/$
 
 """
 

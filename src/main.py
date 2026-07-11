@@ -103,6 +103,10 @@ class StockMonitor:
         # 2. 지수 수집
         indices_data = self._collect_indices(target_date)
 
+        # 2.5. 미국 주식 & 환율 수집
+        us_stocks_data = self._collect_us_stocks(target_date)
+        forex_data = self._collect_forex(target_date)
+
         if not samsung_price or not skhynix_price:
             logger.warning("주가 수집 실패 but 지수는 성공 - 계속 진행")
 
@@ -120,7 +124,7 @@ class StockMonitor:
 
         # 6. 매일 상태 이메일 발송
         if send_daily_email and self.alert_sender:
-            self._send_daily_status(samsung_price, skhynix_price, target_date, indices_data)
+            self._send_daily_status(samsung_price, skhynix_price, target_date, indices_data, us_stocks_data, forex_data)
 
         logger.info("모니터링 완료")
 
@@ -182,6 +186,75 @@ class StockMonitor:
 
         return indices
 
+    def _collect_us_stocks(self, target_date: date) -> dict:
+        """
+        미국 주식 수집 (ETF, 개별 종목)
+
+        Args:
+            target_date: 대상 날짜
+
+        Returns:
+            미국 주식 데이터 딕셔너리
+        """
+        us_stocks = {}
+        us_stocks_config = self.config.get("us_stocks", {})
+
+        for stock_key, symbol in us_stocks_config.items():
+            logger.info(f"{stock_key} 미국 주식 수집 시작")
+
+            price = self.stock_api.get_stock_price(symbol)
+
+            if price:
+                self.db.save_price(symbol, price, target_date)
+                ath = self.db.get_all_time_high(symbol)
+                us_stocks[stock_key] = {
+                    "yesterday": price,
+                    "ath": ath if ath else price
+                }
+                logger.info(f"{stock_key} 미국 주식: ${price:,.2f}")
+            else:
+                logger.warning(f"{stock_key} 미국 주식 수집 실패")
+                us_stocks[stock_key] = {
+                    "yesterday": 0,
+                    "ath": 0
+                }
+
+        return us_stocks
+
+    def _collect_forex(self, target_date: date) -> dict:
+        """
+        환율 수집
+
+        Args:
+            target_date: 대상 날짜
+
+        Returns:
+            환율 데이터 딕셔너리
+        """
+        forex = {}
+        forex_config = self.config.get("forex", {})
+
+        for forex_key, symbol in forex_config.items():
+            logger.info(f"{forex_key} 환율 수집 시작")
+
+            rate = self.stock_api.get_stock_price(symbol)
+
+            if rate:
+                self.db.save_price(symbol, rate, target_date)
+                forex[forex_key] = {
+                    "yesterday": rate,
+                    "ath": rate  # 환율은 전고점 의미 없음
+                }
+                logger.info(f"{forex_key} 환율: {rate:,.2f}원/$")
+            else:
+                logger.warning(f"{forex_key} 환율 수집 실패")
+                forex[forex_key] = {
+                    "yesterday": 0,
+                    "ath": 0
+                }
+
+        return forex
+
     def _check_all_time_high(self, symbol_key: str, price: float, target_date: date) -> bool:
         """
         전고점 갱신 체크
@@ -194,6 +267,10 @@ class StockMonitor:
         Returns:
             새로운 전고점 여부
         """
+        if price is None:
+            logger.warning(f"{symbol_key} 주가 없어 전고점 체크 skipped")
+            return False
+
         symbol = self.config["symbols"][symbol_key]
 
         # 현재 활성 전고점 조회
@@ -290,7 +367,8 @@ class StockMonitor:
         except Exception as e:
             logger.error(f"알림 발송 실패: {e}")
 
-    def _send_daily_status(self, samsung_price: float, skhynix_price: float, target_date: date, indices_data: dict = None):
+    def _send_daily_status(self, samsung_price: float, skhynix_price: float, target_date: date,
+                          indices_data: dict = None, us_stocks_data: dict = None, forex_data: dict = None):
         """
         매일 상태 이메일 발송
 
@@ -299,6 +377,8 @@ class StockMonitor:
             skhynix_price: SK하이닉스 종가
             target_date: 대상 날짜
             indices_data: 지수 데이터 딕셔너리
+            us_stocks_data: 미국 주식 데이터 딕셔너리
+            forex_data: 환율 데이터 딕셔너리
         """
         try:
             # 전고점 정보 조회
@@ -326,7 +406,9 @@ class StockMonitor:
                 skhynix_yesterday_price=skhynix_price,
                 skhynix_ath_date=sk_ath_date,
                 days_since_sk_ath=days_since_sk_ath,
-                indices=indices_data
+                indices=indices_data,
+                us_stocks=us_stocks_data,
+                forex=forex_data
             )
 
             if success:
