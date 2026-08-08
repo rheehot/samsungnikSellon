@@ -25,6 +25,21 @@ def load_config(config_path: str = "config.yaml") -> dict:
             "samsung": os.getenv("SAMSUNG_SYMBOL", "005930.KS"),
             "skhynix": os.getenv("SKHYNIX_SYMBOL", "000660.KS")
         },
+        # 기본값 = config.yaml 값. 환경 변수(render)가 있으면 오버라이드.
+        "indices": {
+            "kospi": os.getenv("KOSPI_SYMBOL", "^KS11"),
+            "kosdaq": os.getenv("KOSDAQ_SYMBOL", "^KQ11"),
+            "nasdaq": os.getenv("NASDAQ_SYMBOL", "^IXIC"),
+            "sp500": os.getenv("SP500_SYMBOL", "^GSPC"),
+            "dow": os.getenv("DOW_SYMBOL", "^DJI")
+        },
+        "us_stocks": {
+            "ewy": os.getenv("EWY_SYMBOL", "EWY"),
+            "mu": os.getenv("MU_SYMBOL", "MU")
+        },
+        "forex": {
+            "usdkrw": os.getenv("USDKRW_SYMBOL", "KRW=X")
+        },
         "monitoring": {
             "check_days": int(os.getenv("CHECK_DAYS", "30")),
             "check_hour": int(os.getenv("CHECK_HOUR", "8")),

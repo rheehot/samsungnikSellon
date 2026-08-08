@@ -42,7 +42,8 @@ class StockAPI:
                 # fast=True로 빠른 조회
                 info = ticker.fast_info
 
-                current_price = info.get("last_price")
+                # yfinance FastInfo는 .get()이 snake_case를 인식 못 함 → 인덱싱 사용
+                current_price = info["last_price"]
                 if current_price:
                     logger.info(f"주가 수집 성공: {symbol} - {current_price}")
                     return current_price
