@@ -80,6 +80,14 @@ class Database:
                 )
             """)
 
+            # 일일 이메일 발송 기록 (중복 발송 방지)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS daily_email_log (
+                    date DATE PRIMARY KEY,
+                    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
             # 인덱스 생성
             cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_stock_prices_symbol_date
@@ -417,4 +425,48 @@ class Database:
                 return row["count"] > 0 if row else False
         except Exception as e:
             logger.error(f"삼성전자 전고점 확인 실패: {e}")
+            return False
+
+    def is_daily_email_sent(self, target_date: date) -> bool:
+        """
+        해당 날짜에 일일 이메일을 이미 발송했는지 확인 (중복 발송 방지)
+
+        Args:
+            target_date: 대상 날짜
+
+        Returns:
+            발송 여부
+        """
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT 1 FROM daily_email_log WHERE date = ?",
+                    (target_date.isoformat(),)
+                )
+                return cursor.fetchone() is not None
+        except Exception as e:
+            logger.error(f"일일 이메일 발송 여부 확인 실패: {e}")
+            return False
+
+    def mark_daily_email_sent(self, target_date: date) -> bool:
+        """
+        해당 날짜 일일 이메일 발송 기록
+
+        Args:
+            target_date: 대상 날짜
+
+        Returns:
+            기록 성공 여부
+        """
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "INSERT OR IGNORE INTO daily_email_log (date) VALUES (?)",
+                    (target_date.isoformat(),)
+                )
+                return True
+        except Exception as e:
+            logger.error(f"일일 이메일 발송 기록 실패: {e}")
             return False

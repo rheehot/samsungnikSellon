@@ -381,6 +381,11 @@ class StockMonitor:
             forex_data: 환율 데이터 딕셔너리
         """
         try:
+            # 중복 발송 방지: 같은 날 이미 보냈으면 skip
+            if self.db.is_daily_email_sent(target_date):
+                logger.info(f"일일 이메일 이미 발송됨 ({target_date}) - skip")
+                return
+
             # 전고점 정보 조회
             samsung_symbol = self.config["symbols"]["samsung"]
             skhynix_symbol = self.config["symbols"]["skhynix"]
@@ -412,6 +417,7 @@ class StockMonitor:
             )
 
             if success:
+                self.db.mark_daily_email_sent(target_date)
                 logger.info("매일 상태 이메일 발송 성공")
 
         except Exception as e:

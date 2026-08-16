@@ -1,0 +1,48 @@
+name: Daily Stock Monitor
+
+on:
+  schedule:
+    # 한국시간 월-금 08:00 = UTC 일-목 23:00 (GitHub Actions cron은 UTC 기준)
+    - cron: "0 23 * * 0-4"
+  workflow_dispatch: {}  # 수동 실행 허용 (테스트용)
+
+permissions:
+  contents: write  # 실행 후 DB 상태를 레포에 커밋백하기 위해 필요
+
+concurrency:
+  group: stock-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run monitor
+        env:
+          EMAIL_ENABLED: "true"
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+        run: python -m src.main
+
+      - name: Persist DB state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/stock_monitor.db
+          if git diff --staged --quiet; then
+            echo "DB 변경 없음 - 커밋 skip"
+          else
+            git commit -m "chore: 주가 DB 상태 업데이트 [skip ci]"
+            git push
+          fi
